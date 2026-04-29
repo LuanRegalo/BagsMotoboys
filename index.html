@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regalo Pizzeria - Lista Bags Motoboys</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f0eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: radial-gradient(circle at 20% 30%, #fff5e6 0%, #f0e4d0 100%);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 700px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 40%, #8b1a1a 100%);
+            padding: 24px 20px 18px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .header .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .logo-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .logo-icon-btn svg {
+            width: 40px;
+            height: 40px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .admin-badge {
+            display: none;
+            background: #ffd966;
+            color: #5c3d1a;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 6px;
+            letter-spacing: 0.4px;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-badge.active {
+            display: inline-flex;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.35);
+        }
+
+        /* Main */
+        .main-content {
+            flex: 1;
+            padding: 18px 20px 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .input-wrapper {
+            flex: 2;
+            min-width: 130px;
+        }
+        .number-wrapper {
+            flex: 1;
+            min-width: 70px;
+        }
+
+        .input-wrapper input,
+        .number-wrapper input {
+            width: 100%;
+            padding: 13px 12px;
+            border: 2px solid #e8e0d5;
+            border-radius: 16px;
+            font-size: 15px;
+            background: #fdfaf6;
+            transition: 0.3s;
+            outline: none;
+            color: #3e2c1c;
+            font-weight: 500;
+        }
+
+        .number-wrapper input {
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: #c0392b;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(192,57,43,0.08);
+        }
+
+        .btn-add {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 13px 18px;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 6px 15px rgba(192,57,43,0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-add:hover {
+            background: #a93226;
+            transform: translateY(-1px);
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: #5a4a3a;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .motoboy-list {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 240px;
+            margin-bottom: 8px;
+        }
+
+        .motoboy-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fdfaf6;
+            padding: 12px 14px;
+            border-radius: 14px;
+            margin-bottom: 6px;
+            border: 1px solid #f0e7da;
+            animation: fadeIn 0.3s;
+        }
+
+        .motoboy-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .motoboy-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .motoboy-number {
+            font-size: 12px;
+            color: #b05a4a;
+            background: #fff3f0;
+            padding: 1px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: #b8a99a;
+            cursor: pointer;
+            padding: 6px;
+        }
+        .btn-remove:hover { color: #c0392b; }
+
+        .empty-state {
+            text-align: center;
+            color: #b8a99a;
+            padding: 20px;
+        }
+
+        /* Modal senha */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal {
+            background: white;
+            border-radius: 24px;
+            padding: 28px 24px;
+            width: 90%;
+            max-width: 340px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 16px;
+        }
+        .modal button {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal .close-modal {
+            background: transparent;
+            color: #888;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        /* Área admin */
+        .admin-panel {
+            display: none;
+            margin-top: 10px;
+            border-top: 2px dashed #e8d9c8;
+            padding-top: 15px;
+        }
+        .admin-panel.active {
+            display: block;
+        }
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .filter-row input[type="date"] {
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid #d4c5b2;
+        }
+        .btn-export {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .history-table th {
+            background: #f5ebe0;
+            padding: 8px;
+            text-align: left;
+        }
+        .history-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 12px;
+            font-size: 11px;
+            color: #b8a99a;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <div class="logo-area">
+            <button class="logo-icon-btn" id="adminTrigger" title="Acesso administrador">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="7" width="18" height="13" rx="2" />
+                    <path d="M3 7 a5 5 0 0 1 5 -5 h8 a5 5 0 0 1 5 5" />
+                    <line x1="12" y1="2" x2="12" y2="7" />
+                    <line x1="7" y1="12" x2="17" y2="12" stroke-width="2.2" />
+                </svg>
+            </button>
+            <div>
+                <h1>REGALO</h1>
+                <div class="subtitle">PIZZERIA</div>
+            </div>
+        </div>
+        <div class="admin-badge" id="adminBadge">
+            🔒 Admin <button class="logout-btn" id="logoutBtn">Sair</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="input-row">
+            <div class="input-wrapper">
+                <input type="text" id="motoboyNameInput" placeholder="Nome do motoboy" autocomplete="off" maxlength="40">
+            </div>
+            <div class="number-wrapper">
+                <input type="text" id="bagNumberInput" placeholder="Nº" autocomplete="off" maxlength="10" inputmode="numeric">
+            </div>
+            <button class="btn-add" id="addButton">➕ Adicionar</button>
+        </div>
+
+        <div class="list-header">
+            <span>🎒</span> Lista Bags Motoboys
+        </div>
+        <ul class="motoboy-list" id="motoboyList"></ul>
+        <div class="empty-state" id="emptyState">📋 Nenhum motoboy registrado.</div>
+
+        <!-- Painel Admin (oculto por padrão) -->
+        <div class="admin-panel" id="adminPanel">
+            <h4 style="margin-bottom:8px;">📜 Histórico de Registros</h4>
+            <div class="filter-row">
+                <label>Filtrar data:</label>
+                <input type="date" id="filterDate">
+                <button class="btn-export" id="exportBtn">📥 Exportar Excel</button>
+            </div>
+            <div style="max-height:200px; overflow-y:auto;">
+                <table class="history-table" id="historyTable">
+                    <thead><tr><th>Nome</th><th>Nº</th><th>Data/Hora</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="footer">© 2026 Regalo Pizzeria</div>
+</div>
+
+<!-- Modal de senha -->
+<div class="modal-overlay" id="passwordModal">
+    <div class="modal">
+        <h3>🔐 Admin</h3>
+        <input type="password" id="passwordInput" placeholder="Senha" autocomplete="off">
+        <button id="confirmPasswordBtn">Entrar</button>
+        <button class="close-modal" id="closeModalBtn">Cancelar</button>
+        <p id="loginError" style="color:red; font-size:13px; display:none;">Senha incorreta</p>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const STORAGE_KEY = 'regalo_motoboys_history';
+        const ADMIN_PASSWORD = 'regalo2026';
+
+        const nameInput = document.getElementById('motoboyNameInput');
+        const numberInput = document.getElementById('bagNumberInput');
+        const addButton = document.getElementById('addButton');
+        const motoboyList = document.getElementById('motoboyList');
+        const emptyState = document.getElementById('emptyState');
+        const adminTrigger = document.getElementById('adminTrigger');
+        const adminBadge = document.getElementById('adminBadge');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminPanel = document.getElementById('adminPanel');
+        const filterDate = document.getElementById('filterDate');
+        const exportBtn = document.getElementById('exportBtn');
+        const historyTableBody = document.querySelector('#historyTable tbody');
+        const passwordModal = document.getElementById('passwordModal');
+        const passwordInput = document.getElementById('passwordInput');
+        const confirmPasswordBtn = document.getElementById('confirmPasswordBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const loginError = document.getElementById('loginError');
+
+        let isAdmin = false;
+        let motoboys = []; // lista atual (sessão)
+
+        // HISTÓRICO (persistente)
+        function getHistorico() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+        function salvarHistorico(registro) {
+            const hist = getHistorico();
+            hist.push(registro);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(hist));
+        }
+        function removerHistorico(index) {
+            const hist = getHistorico();
+            hist.splice(index, 1);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(hist));
+        }
+
+        // Renderizar lista atual
+        function renderLista() {
+            motoboyList.innerHTML = '';
+            if (motoboys.length === 0) {
+                emptyState.style.display = 'block';
+                motoboyList.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                motoboyList.style.display = 'block';
+                motoboys.forEach((item, idx) => {
+                    const li = document.createElement('li');
+                    li.className = 'motoboy-item';
+                    li.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="motoboy-avatar">${item.nome.trim().charAt(0).toUpperCase()}</div>
+                            <div class="motoboy-details">
+                                <strong>${escapeHTML(item.nome)}</strong>
+                                <span class="motoboy-number">Nº ${escapeHTML(item.numero || '—')}</span>
+                            </div>
+                        </div>
+                        <button class="btn-remove" data-index="${idx}">✕</button>
+                    `;
+                    motoboyList.appendChild(li);
+                });
+                document.querySelectorAll('.btn-remove').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        motoboys.splice(index, 1);
+                        renderLista();
+                        if (motoboys.length === 0) nameInput.focus();
+                    });
+                });
+            }
+        }
+
+        function adicionarMotoboy() {
+            const nome = nameInput.value.trim();
+            const numero = numberInput.value.trim();
+            if (!nome) {
+                nameInput.focus();
+                return;
+            }
+            const novo = { nome, numero, timestamp: new Date().toISOString() };
+            motoboys.push({ nome, numero }); // lista atual sem timestamp
+            salvarHistorico(novo);
+            nameInput.value = '';
+            numberInput.value = '';
+            nameInput.focus();
+            renderLista();
+            if (isAdmin) renderHistorico();
+            setTimeout(() => motoboyList.scrollTop = motoboyList.scrollHeight, 50);
+        }
+
+        addButton.addEventListener('click', adicionarMotoboy);
+        nameInput.addEventListener('keypress', e => { if (e.key === 'Enter') adicionarMotoboy(); });
+        numberInput.addEventListener('keypress', e => { if (e.key === 'Enter') adicionarMotoboy(); });
+
+        // Admin
+        function loginAdmin() {
+            isAdmin = true;
+            adminBadge.classList.add('active');
+            adminPanel.classList.add('active');
+            renderHistorico();
+        }
+        function logoutAdmin() {
+            isAdmin = false;
+            adminBadge.classList.remove('active');
+            adminPanel.classList.remove('active');
+            filterDate.value = '';
+        }
+
+        // Modal senha
+        adminTrigger.addEventListener('click', () => {
+            if (isAdmin) {
+                // Se já admin, clique no ícone pode abrir/fechar painel? ou logout? Prefiro manter abrindo modal para trocar senha? Não.
+                // Vamos apenas mostrar um aviso ou nada. Melhor: se admin, clicar no ícone não faz nada.
+                return;
+            }
+            passwordModal.style.display = 'flex';
+            passwordInput.value = '';
+            loginError.style.display = 'none';
+            passwordInput.focus();
+        });
+
+        confirmPasswordBtn.addEventListener('click', () => {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                passwordModal.style.display = 'none';
+                loginAdmin();
+            } else {
+                loginError.style.display = 'block';
+                passwordInput.focus();
+            }
+        });
+        closeModalBtn.addEventListener('click', () => passwordModal.style.display = 'none');
+        passwordInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') confirmPasswordBtn.click();
+        });
+        window.addEventListener('click', e => {
+            if (e.target === passwordModal) passwordModal.style.display = 'none';
+        });
+
+        logoutBtn.addEventListener('click', logoutAdmin);
+
+        // Histórico e exportação
+        function renderHistorico(dataFiltro = null) {
+            let historico = getHistorico();
+            if (dataFiltro) {
+                historico = historico.filter(item => {
+                    const dataItem = new Date(item.timestamp).toISOString().split('T')[0];
+                    return dataItem === dataFiltro;
+                });
+            }
+            historyTableBody.innerHTML = '';
+            historico.slice().reverse().forEach(item => {
+                const tr = document.createElement('tr');
+                const dataFormatada = new Date(item.timestamp).toLocaleString('pt-BR');
+                tr.innerHTML = `<td>${escapeHTML(item.nome)}</td><td>${escapeHTML(item.numero || '—')}</td><td>${dataFormatada}</td>`;
+                historyTableBody.appendChild(tr);
+            });
+        }
+
+        filterDate.addEventListener('change', () => {
+            renderHistorico(filterDate.value);
+        });
+
+        exportBtn.addEventListener('click', () => {
+            let historico = getHistorico();
+            if (filterDate.value) {
+                historico = historico.filter(item => new Date(item.timestamp).toISOString().split('T')[0] === filterDate.value);
+            }
+            if (historico.length === 0) {
+                alert('Nenhum registro para exportar.');
+                return;
+            }
+            let csv = 'Nome,Número,Data/Hora\n';
+            historico.forEach(item => {
+                const data = new Date(item.timestamp).toLocaleString('pt-BR');
+                csv += `"${item.nome}","${item.numero || ''}","${data}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `regalo_historico_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        // Inicial
+        renderLista();
+        nameInput.focus();
+    })();
+</script>
+</body>
+</html>
