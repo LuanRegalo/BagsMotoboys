@@ -24,7 +24,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 520px;
+            max-width: 600px; /* aumentado um pouco para dar mais espaço */
             background: #ffffff;
             border-radius: 28px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -157,7 +157,7 @@
             padding: 13px 12px;
             border: 2px solid #e8e0d5;
             border-radius: 16px;
-            font-size: 15px;
+            font-size: 16px; /* um pouco maior */
             background: #fdfaf6;
             transition: 0.3s;
             outline: none;
@@ -182,6 +182,7 @@
             padding: 13px 18px;
             border-radius: 16px;
             font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
             transition: 0.2s;
             white-space: nowrap;
@@ -203,7 +204,7 @@
             margin-bottom: 10px;
             color: #5a4a3a;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 18px; /* maior */
             text-transform: uppercase;
         }
 
@@ -211,7 +212,7 @@
             list-style: none;
             flex: 1;
             overflow-y: auto;
-            max-height: 240px;
+            max-height: 350px; /* maior para itens maiores */
             margin-bottom: 8px;
         }
 
@@ -220,16 +221,16 @@
             align-items: center;
             justify-content: space-between;
             background: #fdfaf6;
-            padding: 12px 14px;
-            border-radius: 14px;
-            margin-bottom: 6px;
+            padding: 14px 16px; /* maior */
+            border-radius: 16px;
+            margin-bottom: 8px;
             border: 1px solid #f0e7da;
             animation: fadeIn 0.3s;
         }
 
         .motoboy-avatar {
-            width: 34px;
-            height: 34px;
+            width: 44px;  /* maior */
+            height: 44px;
             border-radius: 50%;
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
@@ -237,21 +238,26 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 20px; /* maior */
         }
 
         .motoboy-details {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
+        }
+        .motoboy-details strong {
+            font-size: 20px; /* nome bem maior */
+            color: #3e2c1c;
         }
         .motoboy-number {
-            font-size: 12px;
+            font-size: 15px; /* maior */
             color: #b05a4a;
             background: #fff3f0;
-            padding: 1px 8px;
-            border-radius: 8px;
+            padding: 3px 10px;
+            border-radius: 10px;
             font-weight: 600;
+            display: inline-block; /* melhor ajuste */
         }
 
         .btn-remove {
@@ -259,7 +265,8 @@
             border: none;
             color: #b8a99a;
             cursor: pointer;
-            padding: 6px;
+            padding: 8px;
+            font-size: 20px; /* maior para facilitar o toque */
         }
         .btn-remove:hover { color: #c0392b; }
 
@@ -267,6 +274,7 @@
             text-align: center;
             color: #b8a99a;
             padding: 20px;
+            font-size: 18px;
         }
 
         /* Modal senha */
@@ -479,8 +487,11 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(hist));
         }
 
-        // Renderizar lista atual
+        // Renderizar lista atual (agora ordenada alfabeticamente)
         function renderLista() {
+            // Ordena alfabeticamente pelo nome (ignora maiúsculas/minúsculas e acentos)
+            motoboys.sort((a, b) => a.nome.toLowerCase().localeCompare(b.nome.toLowerCase(), 'pt-BR'));
+
             motoboyList.innerHTML = '';
             if (motoboys.length === 0) {
                 emptyState.style.display = 'block';
@@ -492,7 +503,7 @@
                     const li = document.createElement('li');
                     li.className = 'motoboy-item';
                     li.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
                             <div class="motoboy-avatar">${item.nome.trim().charAt(0).toUpperCase()}</div>
                             <div class="motoboy-details">
                                 <strong>${escapeHTML(item.nome)}</strong>
@@ -522,12 +533,12 @@
                 return;
             }
             const novo = { nome, numero, timestamp: new Date().toISOString() };
-            motoboys.push({ nome, numero }); // lista atual sem timestamp
+            motoboys.push({ nome, numero }); // adiciona sem ordenar ainda
             salvarHistorico(novo);
             nameInput.value = '';
             numberInput.value = '';
             nameInput.focus();
-            renderLista();
+            renderLista(); // ordena ao renderizar
             if (isAdmin) renderHistorico();
             setTimeout(() => motoboyList.scrollTop = motoboyList.scrollHeight, 50);
         }
@@ -552,11 +563,7 @@
 
         // Modal senha
         adminTrigger.addEventListener('click', () => {
-            if (isAdmin) {
-                // Se já admin, clique no ícone pode abrir/fechar painel? ou logout? Prefiro manter abrindo modal para trocar senha? Não.
-                // Vamos apenas mostrar um aviso ou nada. Melhor: se admin, clicar no ícone não faz nada.
-                return;
-            }
+            if (isAdmin) return;
             passwordModal.style.display = 'flex';
             passwordInput.value = '';
             loginError.style.display = 'none';
